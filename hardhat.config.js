@@ -9,7 +9,7 @@ module.exports = {
   networks: {
     goerli: {
       url: URL,
-      accounts: [PRIVATE_KEY],
+      accounts: [`0x ${PRIVATE_KEY}`],
     },
   },
 };
