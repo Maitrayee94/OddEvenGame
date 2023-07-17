@@ -1,16 +1,29 @@
 const hre = require("hardhat");
 
-async function main() {
-  const OddEven = await hre.ethers.getContractFactory("OddEven");
-
-  const OddEvenV= await OddEven.deploy();
-
-  await OddEvenV.deployed();
-  console.log(`WordMixValidator contract address: ${OddEvenV.address}`);
+async function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
+async function main() {
+  // Deploy the CryptoDevs Contract
+  const Contract = await hre.ethers.deployContract("OddEven");
+
+  // wait for the contract to deploy
+  await Contract.waitForDeployment();
+
+  // print the address of the deployed contract
+  console.log("Game Contract Address:", Contract.target);
+
+  // Sleep for 30 seconds while Etherscan indexes the new contract deployment
+  await sleep(30 * 1000); // 30s = 30 * 1000 milliseconds
+
+  // Verify the contract on etherscan
+  await hre.run("verify:verify", {
+    address: Contract.target,
+  });
+}
+
+// Call the main function and catch if there is any error
 main()
   .then(() => process.exit(0))
   .catch((error) => {
